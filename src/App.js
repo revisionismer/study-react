@@ -6,7 +6,12 @@ import './App.css';
 // 2. JSX 문법
 // 3. 바벨 (자바스크립트 ES5) -> ES6
 function App() {
-  return <div>안녕122</div>;
+
+  let list = [1, 2, 3];
+
+  return (
+    <div>{list.map((n) => n)}</div>
+  );
 }
 
 export default App;
