@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+</body>
+<script>
+    // - 불변함수 : concat, filter, map, slice, 스프레드(전개) 연산자 - 
+
+    const a1 = [1, 2, 3];
+    const b1 = [...a1];
+ // const b1 = a;
+    
+    console.log("1. ========= 스프레드 연산자 =========");
+    b1.push(4);
+    console.log(`a1의 값은 : ${a1}`);
+    console.log(`b1의 값은 : ${b1}`);
+
+    const c1 = [0, ...a1, 4];
+    console.log(`c1의 값은 : ${c1}`);
+
+    console.log("2. ========= concat 연산자 =========");
+    const a2 = [1, 2, 3];
+    const b2 = a2.concat(4);
+
+    console.log(`a2의 값은 : ${a2}`);
+    console.log(`b2의 값은 : ${b2}`);
+
+    console.log("3. ========= filter 연산자 =========");
+    const a3 = [1, 2, 3];
+    const b3 = a3.filter( (num) => {  // filter 연산자는 boolean 값중 true인 값을 return 해준다.
+        return num != 1;
+    });
+
+    console.log(b3);
+
+    console.log("4. ========= slice 연산자 =========");
+    const a4 = [1, 2, 3];
+    const b4 = a4.slice(0, 2);
+
+    console.log(b4); // [1,2]
+
+    const c4 = [a4.slice(0, 2)];
+
+    console.log(c4); // [[1, 2]]
+
+    const d4 = [...a4.slice(0, 2), 4, ...a4.slice(2, 3)];
+
+    console.log(d4);  // [1, 2, 4, 3]
+
+    console.log("5. ========= map 연산자 =========");
+    const a5 = [1, 2, 3];
+//  for(let i = 0; i < a5.length; i++) {
+//     console.log(a5[i]);
+//  }
+
+    a5.forEach( (n) => {console.log(n)} );
+
+    const b5 = a5.map( (n) => n + 10); // const b5 = [...a5];
+
+    console.log(b5);
+
+    // 배열 수정하기
+
+    const a6 = {
+        id : 1,
+        name : "홍길동"
+    }
+
+    const b6 = {...a6, name : "임꺽정"};
+    const c6 = { id:1, name:"홍길동", name : "임꺽정2"};
+    const d6 = { id:1, name:"홍길동", name : "임꺽정3", phone : "010-2222-1111", gender : "남"}
+    
+    const data = {gender : "여"};
+    const e6 = {...d6, ...data};
+
+    console.log(b6);
+    console.log(c6);
+    console.log(e6);
+
+    const users = [
+        {
+            id : 1,
+            name : "구창모",
+            phone : "010-2222-3333"
+        },
+        {
+            id : 2,
+            name : "이선희",
+            phone : "010-4321-2223"
+        },
+        {
+            id : 3,
+            name : "이문세",
+            phone : "010-9921-5987"
+        }
+    ];
+
+    const updateUserDto = {
+        id : 2,
+        name : "강수지"
+    }
+    // 최적화가 안되기 때문에 이렇게 사용하면 안됨.
+ // users[1].name = updateUserDto.name;
+
+    console.log(users);
+
+    // filter 사용하면 다 날라감.
+    const newUser1 = users.filter( (u) => u);
+
+    // const newUser = {...users}; -> map은 결과 값을 새로운 배열로 반환
+    const newUser2 = users.map( user => 
+        user.id === updateUserDto.id ? {...user, ...updateUserDto} : user
+    );
+
+    // filter 사용하면 수정이 안됨 : filter는 기존 배열을 반환
+    const newUser3 = users.filter( user => 
+        user.id === updateUserDto.id ? {...user, ...updateUserDto} : user
+    );
+
+    console.log("newUser1", newUser1);
+    console.log("newUser2", newUser2);
+    console.log("newUser3", newUser3);
+</script>
+</html>
