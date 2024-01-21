@@ -4,3 +4,7 @@
 
 1. react 설치 및 세팅
 2. react 실행 흐름 이해하기
+3. react 기본 문법
+4. react 배열(map, filter, slice, concat, spread 연산자)
+5. react 배열 수정하기(map과 spread 응용)
+6. react useState
