@@ -8,3 +8,4 @@
 4. react 배열(map, filter, slice, concat, spread 연산자)
 5. react 배열 수정하기(map과 spread 응용)
 6. react useState
+7. react useEffect
