@@ -1,6 +1,6 @@
 // import logo from './logo.svg';
 import './App.css';
-import React, { useEffect, useMemo, useState } from "react";
+import React, { createRef, useEffect, useMemo, useRef, useState } from "react";
 import Sub from './Sub';
 import Third from './test/Third';
 import { test_num } from './Sub';
@@ -122,7 +122,7 @@ function App() {
   );
   */
 
-  // useMemo : Memorization(기억)
+  /* useMemo : Memorization(기억)
   const [list, setList] = useState([1, 2, 3, 4]);
 
   const [str, setStr] = useState("합계");
@@ -145,6 +145,26 @@ function App() {
     </div>
     <div>{str} : {addResult}</div>
   </div>;
+  */
+
+  // useRef(디자인) : dom을 변경할때 사용
+  const myRef = useRef(null);
+
+  const [list, setList] = useState([{ id: 1, name: "길동" }, { id: 2, name: "꺽정" }]);
+
+  const myRefs = Array.from({ length: list.length }).map(() => createRef());
+  return (
+    <div>
+
+      <button onClick={() => {
+        //  myRef.current.style.backgroundColor = 'red' 
+        myRefs[0].current.style.backgroundColor = 'red'
+        myRefs[1].current.style.backgroundColor = 'green'
+      }}>색 변경</button>
+      <div ref={myRef}>박스</div>
+      {list.map((user, idx) => <h1 ref={myRefs[idx]}>{user.name}</h1>)}
+    </div>
+  );
 }
 
 export default App;
