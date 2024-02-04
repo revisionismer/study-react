@@ -9,3 +9,4 @@
 5. react 배열 수정하기(map과 spread 응용)
 6. react useState
 7. react useEffect
+8. react useMemo
