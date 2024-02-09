@@ -11,3 +11,4 @@
 7. react useEffect
 8. react useMemo
 9. react useRef
+10. react styled-components
