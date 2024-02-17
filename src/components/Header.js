@@ -6,11 +6,12 @@ import styled from 'styled-components';
 const HeaderList = styled.div`
     border: 1px solid black;
     height: 300px;
+    background-color: ${(props) => props.backgroundcolor};
 `;
 
 const Header = () => {
     return (
-        <HeaderList>
+        <HeaderList backgroundcolor='yellow'>
             <ul>
                 <li>인사말</li>
                 <li>오시는길</li>
