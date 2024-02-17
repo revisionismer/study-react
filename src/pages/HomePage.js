@@ -9,6 +9,8 @@ const HomePage = () => {
     const [boards, setBoards] = useState([]);
     const [number, setNumber] = useState(0);
 
+    const [user, setUser] = useState({});
+
     // 1-2. 빈 배열을 디펜던시 자리에 넣으면 한번만 실행
     useEffect(() => {
         // 1-3. 다운로드 가정
@@ -19,13 +21,13 @@ const HomePage = () => {
         ];
 
         setBoards([...data]);
-        setNumber(0);
+        setUser({ id: 1, username: 'ssar' });
     }, [])
 
     return (
         <div>
             <Header />
-            <Home boards={boards} setBoards={setBoards} number={number} setNumber={setNumber} />  {/** Props */}
+            <Home boards={boards} setBoards={setBoards} number={number} setNumber={setNumber} user={user} setUser={setUser} />  {/** Props */}
             <Footer />
         </div>
     );

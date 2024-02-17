@@ -13,3 +13,4 @@
 9. react useRef
 10. react styled-components
 11. react props(변수,함수 passing하기)
+12. react styled component props 패싱
