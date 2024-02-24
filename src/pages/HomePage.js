@@ -21,13 +21,13 @@ const HomePage = () => {
         ];
 
         setBoards([...data]);
-        setUser({ id: 1, username: 'ssar' });
+        setUser({ id: 1, username: "cos" });
     }, [])
 
     return (
         <div>
             <Header />
-            <Home boards={boards} setBoards={setBoards} number={number} setNumber={setNumber} user={user} setUser={setUser} />  {/** Props */}
+            <Home boards={boards} number={number} user={user} />  {/** Props */}
             <Footer />
         </div>
     );
