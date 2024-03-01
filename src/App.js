@@ -13,6 +13,8 @@ import Login from './components/login/Login';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 
+import { Routes, Route } from 'react-router-dom';
+
 
 const aColor = {
   backgroundColor: 'red',
@@ -205,8 +207,14 @@ function App() {
 
   return (
     <div>
-      {/*  <LoginPage /> */}
-      <HomePage />
+      <Header />
+      {/** Route를 하려면 Routes 안에 선언되어야 한다. */}
+      <Routes >
+        {/** exact 속성 true : path랑 정확히 일치해야 routing 해준다는 의미. */}
+        <Route path='/*' exact={true} element={<HomePage />}></Route>
+        <Route path="/login/:id/*" exact={true} element={<LoginPage />}></Route>
+      </Routes>
+      <Footer />
     </div>
   );
 
