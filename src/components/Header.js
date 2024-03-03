@@ -24,61 +24,18 @@ const LoginLink = styled(Link)`
 const Header = () => {
 
     return (
-    <div>
-        <HeaderList $backgroundcolor={'yellow'}>
-            <ul>
-                <li><HomeLink to={"/"}>Home</HomeLink></li>
-                <li><LoginLink to={"/login/10"} >로그인</LoginLink></li>
-            </ul>
-        </HeaderList>
-        <Navbar bg='dark' variant='dark'>
-            <Container>
-                <Navbar.Brand href='#home'>Navbar</Navbar.Brand>
+        <div>
+            <Navbar bg='dark' variant='dark'>
+                <Navbar.Brand>
+                    <Link to={"/"} style={{ paddingLeft: 10 }} className='nav-link'>Home</Link>
+                </Navbar.Brand>
                 <Nav className='mr-auto'>
-                    <Link to={"/"} className='nav-link'>Home</Link>
-                    <Link to={"/features"} className='nav-link'>Features</Link>
-                    <Link to={"/pricing"} className='nav-link'>Pricing</Link>
+                    <Link to={"/write"} className='nav-link'>글쓰기</Link>
                 </Nav>
-                <Form className='d-flex'>
-                    <FormControl type='text' placeholder='Search' className='mr-sm-2'/>
-                    <Button variant='outline-info'>Search</Button>
-                </Form>
-            </Container>
-        </Navbar>
-        <br/>
-        <br/>
-        <Navbar bg='primary' variant='primary'>
-            <Container>
-                <Navbar.Brand href='#home'>Navbar</Navbar.Brand>
-                <Nav className='mr-auto'>
-                    <Link to={"/"} className='nav-link'>Home</Link>
-                    <Link to={"/features"} className='nav-link'>Features</Link>
-                    <Link to={"/pricing"} className='nav-link'>Pricing</Link>
-                </Nav>
-                <Form className='d-flex'>
-                    <FormControl type='text' placeholder='Search' className='mr-sm-2'/>
-                    <Button variant='outline-danger'>Search</Button>
-                </Form>
-            </Container>
-        </Navbar>
-        <br/>
-        <br/>
-        <Navbar bg='secondary' variant='secondary'>
-            <Container>
-                <Navbar.Brand href='#home'>Navbar</Navbar.Brand>
-                <Nav className='mr-auto'>
-                    <Link to={"/"} className='nav-link'>Home</Link>
-                    <Link to={"/features"} className='nav-link'>Features</Link>
-                    <Link to={"/pricing"} className='nav-link'>Pricing</Link>
-                </Nav>
-                <Form className='d-flex'>
-                    <FormControl type='text' placeholder='Search' className='mr-sm-2'/>
-                    <Button variant='outline-light'>Search</Button>
-                </Form>
-            </Container>
-        </Navbar>
-    </div>
-        
+            </Navbar>
+
+        </div>
+
     );
 };
 
