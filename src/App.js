@@ -14,6 +14,10 @@ import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 
 import { Routes, Route } from 'react-router-dom';
+import ListPage from './pages/board/ListPage';
+import WritePage from './pages/board/WritePage';
+import Top from './components/redux/Top';
+import Bottom from './components/redux/Bottom';
 
 
 const aColor = {
@@ -205,14 +209,24 @@ function App() {
 
 function App() {
 
+  // const [number, setNumber] = useState(1);
+
+  // const addNumber = () => {
+  //  setNumber(number + 1);
+  // }
+
   return (
     <div>
       <Header />
       {/** Route를 하려면 Routes 안에 선언되어야 한다. */}
+      {/** <Top number={number} /> */}
+      {/** <Bottom addNumber={addNumber} />*/}
+      <Top />
+      <Bottom />
       <Routes >
         {/** exact 속성 true : path랑 정확히 일치해야 routing 해준다는 의미. */}
-        <Route path='/*' exact={true} element={<HomePage />}></Route>
-        <Route path="/login/:id/*" exact={true} element={<LoginPage />}></Route>
+        <Route path='/*' exact={true} element={<ListPage />}></Route>
+        <Route path="/write/*" exact={true} element={<WritePage />}></Route>
       </Routes>
       <Footer />
     </div>

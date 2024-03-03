@@ -2,18 +2,23 @@ import React from 'react';
 import styled from 'styled-components';
 
 const FooterList = styled.div`
-    border: 1px solid gray;
-    height: 300px;
+    position:fixed; 
+    left:0px; 
+    bottom:0px; 
+    height:60px; 
+    width:100%; 
+    color: white;
 `;
 
 const Footer = () => {
     return (
-        <FooterList>
+        <FooterList className='bg-dark'>
             <ul>
                 <li>오시는길 : 충북 청주시 상당구 산성로 55</li>
                 <li>전화번호 : 043-250-2137</li>
             </ul>
         </FooterList>
+
     );
 };
 
