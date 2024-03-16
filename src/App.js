@@ -13,11 +13,13 @@ import Login from './components/login/Login';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import ListPage from './pages/board/ListPage';
 import WritePage from './pages/board/WritePage';
 import Top from './components/redux/Top';
 import Bottom from './components/redux/Bottom';
+import JoinPage from './pages/JoinPage';
+import DetailPage from './pages/board/DetailPage';
 
 
 const aColor = {
@@ -215,18 +217,32 @@ function App() {
   //  setNumber(number + 1);
   // }
 
+  const { pathname } = useLocation();
+  
+  if(pathname === '/login') {
+    return (
+      <Routes>
+        <Route path='/login/*' exact={true} element={<LoginPage />}></Route>
+      </Routes>
+    );
+  }
+
   return (
     <div>
+      
       <Header />
       {/** Route를 하려면 Routes 안에 선언되어야 한다. */}
       {/** <Top number={number} /> */}
       {/** <Bottom addNumber={addNumber} />*/}
-      <Top />
-      <Bottom />
-      <Routes >
+      {/*<Top />*/}
+      {/*<Bottom />*/}
+      <Routes>
         {/** exact 속성 true : path랑 정확히 일치해야 routing 해준다는 의미. */}
-        <Route path='/*' exact={true} element={<ListPage />}></Route>
-        <Route path="/write/*" exact={true} element={<WritePage />}></Route>
+        <Route path='/*' exact={true} element={<HomePage />}></Route>
+        <Route path='/boards/*' exact={true} element={<ListPage />}></Route>
+        <Route path="/boards/write/*" exact={true} element={<WritePage />}></Route>
+        <Route path='/boards/:id/*' exact={true} element={<DetailPage />}></Route>
+        <Route path='/join/*' exact={true} element={<JoinPage />}></Route>
       </Routes>
       <Footer />
     </div>
