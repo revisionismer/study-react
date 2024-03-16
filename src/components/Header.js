@@ -30,7 +30,16 @@ const Header = () => {
                     <Link to={"/"} style={{ paddingLeft: 10 }} className='nav-link'>Home</Link>
                 </Navbar.Brand>
                 <Nav className='mr-auto'>
-                    <Link to={"/write"} className='nav-link'>글쓰기</Link>
+                    <Link to={"/join"} className='nav-link'>회원가입</Link>
+                </Nav>
+                <Nav className='mr-auto'>
+                    <Link to={"/login"} className='nav-link'>로그인</Link>
+                </Nav>
+                <Nav className='mr-auto'>
+                    <Link to={"/boards"} className='nav-link'>게시판</Link>
+                </Nav>
+                <Nav className='mr-auto'>
+                    <Link to={"/boards/write"} className='nav-link'>글쓰기</Link>
                 </Nav>
             </Navbar>
 
