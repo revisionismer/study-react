@@ -8,12 +8,14 @@ const FooterList = styled.div`
     height:60px; 
     width:100%; 
     color: white;
+    text-align: center;
+
 `;
 
 const Footer = () => {
     return (
         <FooterList className='bg-dark'>
-            <ul>
+            <ul style={{ listStyle: 'none', marginTop: '6px' }}>
                 <li>오시는길 : 충북 청주시 상당구 산성로 55</li>
                 <li>전화번호 : 043-250-2137</li>
             </ul>
