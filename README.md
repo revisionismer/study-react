@@ -19,3 +19,4 @@
 15. react flux and redux
 16. springboot 서버와 react 프로젝트 연동 테스트
 17. 로그인 페이지 꾸미기
+18. 로그인, 로그아웃 서비스 axios로 통신 테스트 완료
