@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, Navigate, json, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import loginMainImg from '../../aseets/img/wave.png';
 import bgImg from '../../aseets/img/bg.svg';
 import avatarImg from '../../aseets/img/avatar.svg';
 
 import { Person, LockFill } from "react-bootstrap-icons";
+
+import axios from 'axios';
 
 const LoginArea = styled.div`
 
@@ -30,7 +32,7 @@ const LoginArea = styled.div`
         height: 100vh;
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        grid-gap :7rem;
+        grid-gap :5rem;
         padding: 0 2rem;
     }
 
@@ -77,6 +79,11 @@ const LoginArea = styled.div`
 
     .login-content .input-div.one {
         margin-top: 0;
+    }
+
+    .userBtnArea {
+        display: flex;
+        justify-content : space-between;
     }
 
     .i {
@@ -241,20 +248,71 @@ function addcl() {
 
 function remcl() {
     let parent = this.parentNode.parentNode;
-    if (this.value == "") {
+    if (this.value === "") {
         parent.classList.remove("focus");
     }
 }
-
 
 inputs.forEach(input => {
     input.addEventListener("focus", addcl);
     input.addEventListener("blur", remcl);
 });
 
+var ACCESS_TOKEN = "";
+
+// 주의 : 함수 컴포넌트에서 React hook을 사용하려면 함수명 앞 글자가 항상 대문자여야 한다.
+
 const Login = () => {
 
+    // 2024-03-20 : 로그인, 로그아웃까지 완료
     const navigate = useNavigate();
+
+    function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+    
+        var loginObject = {
+            username : username,
+            password : password
+        }
+    
+        console.log(loginObject)
+    
+        axios.post('/login',
+            // 1-1. 첫번째 인자 값 : 서버로 보낼 데이터
+            JSON.stringify(loginObject),
+            // 1-2. 두번째 인자값 : headers 에 세팅할 값들 ex) content-type, media 방식 등
+            {
+                headers: {
+                    'Content-Type' : 'application/json; charset=UTF-8',
+                }
+            }
+    
+        ).then( function(res) {
+            console.log(res);
+    
+            // 1-3. response에서 가져온 값을 string으로 만들기 위해 앞에 "" 붙임
+            var responseHeader = "" + res.headers.get('authorization');
+    
+            ACCESS_TOKEN = responseHeader.substring(7);
+
+            console.log("엑세스 토큰 : " + ACCESS_TOKEN);
+
+            navigate("/")
+    
+        })
+        .catch( function(res) {
+            console.log(res);
+            if(res.response.status === 500) {
+                alert(res.response.statusText);
+                return;
+            }
+
+            alert(res.response.data.message);
+            return;
+        })
+    
+    }
 
     return (
         <>
@@ -265,15 +323,15 @@ const Login = () => {
                         <img src={bgImg} alt='' />
                     </div>
                     <div className="login-content">
-                        <form>
+                        <form id='loginForm'>
                             <img src={avatarImg} alt='' />
-                            <h2 className="title">Welcome</h2>
+                            <h2 className="title">Login</h2>
                             <div className="input-div one">
                                 <div className="i">
                                     <Person></Person>
                                 </div>
                                 <div className="div">
-                                    <input type="text" className="input" placeholder='username' />
+                                    <input type="text" id='username' name='username' className="input" placeholder='username' />
                                 </div>
                             </div>
                             <div className="input-div pass">
@@ -281,12 +339,15 @@ const Login = () => {
                                     <LockFill></LockFill>
                                 </div>
                                 <div className="div">
-                                    <input type="password" className="input" placeholder='password' />
+                                    <input type="password" id='password' name='username' className="input" placeholder='password' />
                                 </div>
                             </div>
-                            <Link to="#">Forgot Password?</Link>
-                            <input type="submit" className="btn" value="Login" />
-                            <button className="btn" onClick={() => navigate('/')}>cancle</button>
+                            <div className='userBtnArea'>
+                                <Link to="#">Join</Link>
+                                <Link to="#">Forgot Password?</Link>
+                            </div>
+                            <button type='button' id='loginBtn' name='loginBtn' className="btn" value="Login" onClick={ () => login() }>Login</button>
+                            <button type='button' id='cancelBtn' name='cancelBtn' className="btn" onClick={() => navigate('/')}>cancel</button>
                         </form>
                     </div>
                 </div>

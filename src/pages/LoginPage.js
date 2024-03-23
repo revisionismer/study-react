@@ -12,7 +12,7 @@ const LoginPage = () => {
 
     return (
         <>
-            <Login />
+            <Login/>
         </>
     );
 };
