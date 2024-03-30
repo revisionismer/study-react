@@ -12,15 +12,15 @@ const WritePage = (props) => {
         let result = null;
         let cookie = document.cookie.split(';');
 
-        cookie.some( function(item) {
+        cookie.some(function (item) {
             item = item.replace(' ', '');
 
             let dic = item.split('=');
 
-			if(key === dic[0]) {
-				result = dic[1];
-				return true;
-			}
+            if (key === dic[0]) {
+                result = dic[1];
+                return true;
+            }
             return false;
         });
         return result;
@@ -30,22 +30,22 @@ const WritePage = (props) => {
 
     // 2024-03-27 : 여기까지
     function saveBook() {
-        
+
         const title = document.getElementById('title').value;
         const author = document.getElementById('author').value;
 
-        if(!title) {
+        if (!title) {
             alert("도서명을 입력해주세요");
             document.getElementById('title').focus();
             return false;
         }
 
-        if(!author) {
+        if (!author) {
             alert("도서의 저자를 입력해주세요.");
             document.getElementById('author').focus();
             return false;
         }
-        
+
         var bookObject = {
             title: title,
             author: author
@@ -66,19 +66,20 @@ const WritePage = (props) => {
 
         ).then(function (res) {
             console.log(res);
-  
+
             navigate("/boards");
 
         }).catch(function (res) {
             console.log(res);
-            if (res.response.status === 401) {
+
+            if (res.response.status === 400 || res.response.status === 401) {
                 alert(res.response.data.message);
                 navigate("/login");
                 return;
             }
 
         })
-    
+
     }
 
     return (
@@ -86,15 +87,15 @@ const WritePage = (props) => {
             <Form>
                 <FormGroup id='formBasicTitle'>
                     <FormLabel>Title</FormLabel>
-                    <FormControl type='text' id='title' name='title' placeholder='책의 제목을 입력해주세요.'/>
+                    <FormControl type='text' id='title' name='title' placeholder='책의 제목을 입력해주세요.' />
                 </FormGroup>
                 <FormGroup id='formBasicAuthor'>
                     <FormLabel>Author</FormLabel>
-                    <FormControl type='text' id='author' name='author' placeholder='책의 저자를 입력해주세요.'/>
+                    <FormControl type='text' id='author' name='author' placeholder='책의 저자를 입력해주세요.' />
                 </FormGroup>
             </Form>
-            <div style={{paddingTop: 10}}>
-                <Button type='button' id='bookSaveBtn' name='bookSaveBtn' variant='primary' style={{marginRight: 10}} onClick={ () => saveBook()}>저장</Button>
+            <div style={{ paddingTop: 10 }}>
+                <Button type='button' id='bookSaveBtn' name='bookSaveBtn' variant='primary' style={{ marginRight: 10 }} onClick={() => saveBook()}>저장</Button>
                 <Button type='button' id='cancelBtn' name='cancelBtn' variant='warning' onClick={() => navigate('/boards')}>취소</Button>
             </div>
         </div>
