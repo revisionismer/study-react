@@ -218,8 +218,8 @@ function App() {
   // }
 
   const { pathname } = useLocation();
-  
-  if(pathname === '/login') {
+
+  if (pathname === '/login') {
     return (
       <Routes>
         <Route path='/login/*' exact={true} element={<LoginPage />}></Route>
@@ -227,9 +227,17 @@ function App() {
     );
   }
 
+  if (pathname === '/join') {
+    return (
+      <Routes>
+        <Route path='/join/*' exact={true} element={<JoinPage />}></Route>
+      </Routes>
+    );
+  }
+
   return (
     <div>
-      
+
       <Header />
       {/** Route를 하려면 Routes 안에 선언되어야 한다. */}
       {/** <Top number={number} /> */}
@@ -241,8 +249,8 @@ function App() {
         <Route path='/*' exact={true} element={<HomePage />}></Route>
         <Route path='/boards/*' exact={true} element={<ListPage />}></Route>
         <Route path="/boards/write/*" exact={true} element={<WritePage />}></Route>
-        <Route path='/boards/:id/*' exact={true} element={<DetailPage />}></Route>
-        <Route path='/join/*' exact={true} element={<JoinPage />}></Route>
+        <Route path='/boards/:id/detail/*' exact={true} element={<DetailPage />}></Route>
+
       </Routes>
       <Footer />
     </div>
