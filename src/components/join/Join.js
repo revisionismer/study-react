@@ -1,16 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { Link, Navigate, json, useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import loginMainImg from '../../aseets/img/wave.png';
+
+import joinMainImg from '../../aseets/img/wave.png';
 import bgImg from '../../aseets/img/bg.svg';
 import avatarImg from '../../aseets/img/avatar.svg';
-
-import { Person, LockFill } from "react-bootstrap-icons";
+import { Envelope, LockFill, Mailbox, Person } from 'react-bootstrap-icons';
 
 import axios from 'axios';
 
-const LoginArea = styled.div`
+const JoinArea = styled.div`
 
     padding: 0;
     margin: 0;
@@ -42,7 +43,7 @@ const LoginArea = styled.div`
         align-items: center;
     }
 
-    .login-content {
+    .join-content {
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -57,18 +58,18 @@ const LoginArea = styled.div`
         width: 360px;
     }
 
-    .login-content img {
+    .join-content img {
         height: 100px;
     }
 
-    .login-content h2 {
+    .join-content h2 {
         margin: 15px 0;
         color: #333;
         text-transform: uppercase;
         font-size: 2.9rem;
     }
 
-    .login-content .input-div {
+    .join-content .input-div {
         position: relative;
         display: grid;
         grid-template-columns: 7% 93%;
@@ -77,7 +78,7 @@ const LoginArea = styled.div`
         border-bottom: 2px solid #d9d9d9;
     }
 
-    .login-content .input-div.one {
+    .join-content .input-div.one {
         margin-top: 0;
     }
 
@@ -196,6 +197,9 @@ const LoginArea = styled.div`
         background-position: right;
     }
 
+    #email_validation {
+        color : red;
+    }
 
     @media screen and (max-width: 1050px) {
         .container {
@@ -208,7 +212,7 @@ const LoginArea = styled.div`
             width: 290px;
         }
 
-        .login-content h2 {
+        .join-content h2 {
             font-size: 2.4rem;
             margin: 8px 0;
         }
@@ -231,9 +235,10 @@ const LoginArea = styled.div`
             display: none;
         }
 
-        .login-content {
+        .join-content {
             justify-content: center;
         }
+
     }
     
 `;
@@ -258,48 +263,103 @@ inputs.forEach(input => {
     input.addEventListener("blur", remcl);
 });
 
-var ACCESS_TOKEN = "";
+const Join = () => {
 
-// 주의 : 함수 컴포넌트에서 React hook을 사용하려면 함수명 앞 글자가 항상 대문자여야 한다.
-
-const Login = () => {
-
-    // 2024-03-20 : 로그인, 로그아웃까지 완료
     const navigate = useNavigate();
+    const email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
 
-    function login() {
+    function emailCheck(email_address) {
+
+        if (!email_regex.test(email_address)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function validateEmail() {
+        var emailInput = document.getElementById('email');
+        var resultDiv = document.getElementById('email_validation');
+
+        var email = emailInput.value;
+
+        if (!emailCheck(email)) {
+            resultDiv.innerHTML = '유효하지 않은 이메일 주소입니다.';
+            document.getElementById('email').focus();
+            return false;
+        } else {
+            resultDiv.innerHTML = '';
+            return true;
+        }
+    }
+
+    function join() {
+
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
+        const password_chk = document.getElementById('password_chk').value;
+        const email = document.getElementById('email').value;
 
-        var loginObject = {
-            username: username,
-            password: password
+        // 2024-03-25 : 회원가입 유효성 검사 백엔드단, 프론트단 처리 완료 : function 안에 있어야 정상 동작(분리시키면 작동 안함)
+        if(!username) {
+            alert("아이디를 입력해주세요");
+            document.getElementById('username').focus();
+            return false;
         }
 
-        console.log(loginObject)
+        if(!password) {
+            alert("비밀번호를 입력해주세요.");
+            document.getElementById('password').focus();
+            return false;
+        }
 
-        axios.post('/login',
+        if(!password_chk) {
+            alert("비밀번호를 한 번 더 입력해주세요.");
+            document.getElementById('password_chk').focus();
+            return false;
+        }
+
+        if(!email) {
+            alert("이메일을 입력해주세요.");
+            document.getElementById('email').focus();
+            return false;
+        }
+
+        if (password !== password_chk) {
+            alert("비밀번호가 다릅니다.");
+
+            document.getElementById('password').value = "";
+            document.getElementById('password_chk').value = "";
+            return false;
+        }
+
+        validateEmail(email);
+
+        var joinObject = {
+            username: username,
+            password: password,
+            password_chk: password_chk,
+            email: email
+        }
+
+        console.log(joinObject);
+
+        axios.post('/api/users/join',
             // 1-1. 첫번째 인자 값 : 서버로 보낼 데이터
-            JSON.stringify(loginObject),
+            JSON.stringify(joinObject),
             // 1-2. 두번째 인자값 : headers 에 세팅할 값들 ex) content-type, media 방식 등
             {
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8',
                 }
             }
-
+            // 1-3. 성공
         ).then(function (res) {
             console.log(res);
-
-            // 1-3. response에서 가져온 값을 string으로 만들기 위해 앞에 "" 붙임
-            var responseHeader = "" + res.headers.get('authorization');
-
-            ACCESS_TOKEN = responseHeader.substring(7);
-
-            console.log("엑세스 토큰 : " + ACCESS_TOKEN);
+            alert(res.data.message);
 
             navigate("/")
-
+        // 1-4. 실패
         }).catch(function (res) {
             console.log(res);
             if (res.response.status === 500) {
@@ -311,26 +371,27 @@ const Login = () => {
             return;
         })
 
+
     }
 
     return (
         <>
-            <LoginArea>
-                <img className="wave" src={loginMainImg} alt='' />
+            <JoinArea>
+                <img className="wave" src={joinMainImg} alt='' />
                 <div className="container">
                     <div className="img">
                         <img src={bgImg} alt='' />
                     </div>
-                    <div className="login-content">
-                        <form id='loginForm'>
+                    <div className="join-content">
+                        <form id='joinForm'>
                             <img src={avatarImg} alt='' />
-                            <h2 className="title">Login</h2>
+                            <h2 className="title">Join</h2>
                             <div className="input-div one">
                                 <div className="i">
                                     <Person></Person>
                                 </div>
                                 <div className="div">
-                                    <input type="text" id='username' name='username' className="input" placeholder='username' />
+                                    <input type="text" id='username' name='username' className="input" placeholder='아이디' />
                                 </div>
                             </div>
                             <div className="input-div pass">
@@ -338,21 +399,35 @@ const Login = () => {
                                     <LockFill></LockFill>
                                 </div>
                                 <div className="div">
-                                    <input type="password" id='password' name='username' className="input" placeholder='password' />
+                                    <input type="password" id='password' name='password' className="input" placeholder='비밀번호' />
                                 </div>
                             </div>
-                            <div className='userBtnArea'>
-                                <Link to="/join">Join</Link>
-                                <Link to="#">Forgot Password?</Link>
+                            <div className="input-div pass-chk">
+                                <div className="i">
+                                    <LockFill></LockFill>
+                                </div>
+                                <div className="div">
+                                    <input type="password" id='password_chk' name='password_chk' className="input" placeholder='비밀번호 확인' />
+                                </div>
                             </div>
-                            <button type='button' id='loginBtn' name='loginBtn' className="btn" value="Login" onClick={() => login()}>Login</button>
+                            <div className="input-div email">
+                                <div className="i">
+                                    <Envelope></Envelope>
+                                </div>
+                                <div className="div">
+                                    <input type="email" id='email' name='email' className="input" placeholder='이메일 주소' />
+                                </div>
+                            </div>
+                            <p id="email_validation"></p>
+
+                            <button type='button' id='joinBtn' name='joinBtn' className="btn" value="Join" onClick={() => join()}>Join</button>
                             <button type='button' id='cancelBtn' name='cancelBtn' className="btn" onClick={() => navigate('/')}>cancel</button>
                         </form>
                     </div>
                 </div>
-            </LoginArea>
+            </JoinArea>
         </>
     );
 };
 
-export default Login;
+export default Join;

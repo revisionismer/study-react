@@ -3,11 +3,10 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import BookItem from '../../components/book/BookItem';
 
 const TableArea = styled.div`
     width: 500px;
-    height: 300px;
-
 `;
 
 const ListPage = () => {
@@ -15,6 +14,7 @@ const ListPage = () => {
     // 2024-03-14 : 여기까지.
     const [books, setBooks] = useState([]);
 
+    // 해당 js가 호출시 최초 한번 실행
     useEffect(() => {
 
         const getBooks = async () => {
@@ -28,7 +28,8 @@ const ListPage = () => {
                 })
                 .catch(() => {
                     console.log("데이터 불러오기 실패");
-                })
+                }
+            )
         }
 
         getBooks();
@@ -48,11 +49,12 @@ const ListPage = () => {
                             </tr>
                         </thead>
                         <tbody>
+                             {/** 1-1. 데이터 뿌리는 방법 1 : 직접 */}
                             {books.map((book, index) => {
                                 return (
                                     // Tip : 2개 이상의 태그를 return 할시에는 <></>로 감싸줘야 된다.
                                     <tr key={index}>
-                                        <td><Link to={"/boards/" + book.id}>{book.id}</Link></td>
+                                        <td><Link to={"/boards/" + book.id + "/detail"}>{book.id}</Link></td>
                                         <td>{book.title}</td>
                                         <td>{book.author}</td>
                                     </tr>
@@ -61,6 +63,15 @@ const ListPage = () => {
                         </tbody>
                     </table>
                 </TableArea>
+            </div>
+            <p>책 리스트</p>
+            <div className='container'>
+                <div style={{height: '1000vh'}}>
+                    {/** 1-2. 데이터 뿌리는 방법 2 : component에 위임(2024-03-26) */}
+                    {books.map((book, index) => {
+                        return (<BookItem key={index} book={book}></BookItem>);
+                    })}
+                </div>
             </div>
         </>
     );

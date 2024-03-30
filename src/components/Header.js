@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Container, Form, FormControl, Nav, Navbar } from 'react-bootstrap';
 
-
 import axios from 'axios';
 
 // 하나의 컴포넌트 생성(재사용)

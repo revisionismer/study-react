@@ -30,6 +30,7 @@ const Home = (props) => {
             <StyledAddButton $user={user}>더하기</StyledAddButton>
             <StyledDeleteButton $user={user} onClick={() => setBoards([])}>전체 삭제</StyledDeleteButton>
             {boards.map((board, index) => <h3 key={index}>제목 : {board.title} 내용 : {board.content}</h3>)}
+           
         </div>
 
     );
