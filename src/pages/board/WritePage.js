@@ -84,19 +84,21 @@ const WritePage = (props) => {
 
     return (
         <div className='container'>
-            <Form>
-                <FormGroup id='formBasicTitle'>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl type='text' id='title' name='title' placeholder='책의 제목을 입력해주세요.' />
-                </FormGroup>
-                <FormGroup id='formBasicAuthor'>
-                    <FormLabel>Author</FormLabel>
-                    <FormControl type='text' id='author' name='author' placeholder='책의 저자를 입력해주세요.' />
-                </FormGroup>
-            </Form>
-            <div style={{ paddingTop: 10 }}>
-                <Button type='button' id='bookSaveBtn' name='bookSaveBtn' variant='primary' style={{ marginRight: 10 }} onClick={() => saveBook()}>저장</Button>
-                <Button type='button' id='cancelBtn' name='cancelBtn' variant='warning' onClick={() => navigate('/boards')}>취소</Button>
+            <div style={{ width: "500px" }}>
+                <Form>
+                    <FormGroup id='formBasicTitle'>
+                        <FormLabel>Title</FormLabel>
+                        <FormControl type='text' id='title' name='title' placeholder='책의 제목을 입력해주세요.' />
+                    </FormGroup>
+                    <FormGroup id='formBasicAuthor'>
+                        <FormLabel>Author</FormLabel>
+                        <FormControl type='text' id='author' name='author' placeholder='책의 저자를 입력해주세요.' />
+                    </FormGroup>
+                </Form>
+                <div style={{ paddingTop: 10 }}>
+                    <Button type='button' id='bookSaveBtn' name='bookSaveBtn' variant='primary' style={{ marginRight: 10 }} onClick={() => saveBook()}>저장</Button>
+                    <Button type='button' id='cancelBtn' name='cancelBtn' variant='warning' onClick={() => navigate('/boards')}>취소</Button>
+                </div>
             </div>
         </div>
     );
