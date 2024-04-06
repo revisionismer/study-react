@@ -34,7 +34,8 @@ const DetailPage = () => {
     const [book, setBook] = useState({
         id: "",
         title: "",
-        author: ""
+        author: "",
+        visitCnt: ""
     });
 
     useEffect(() => {
@@ -52,24 +53,61 @@ const DetailPage = () => {
                 console.log(res.data.data);
                 setBook(res.data.data);
 
+            }).catch(function (res) {
+                console.log(res);
+                if (res.response.status === 401) {
+                    // 2024-03-28 : alert가 두번씩 호출됨 고민해봐야함 : index.js에서 문제됨
+                
+                    alert(res.response.data.message);
+                    navigate("/login");
+                    return;
+                }
             })
-                .catch(function (res) {
-                    console.log(res);
-                    if (res.response.status === 401) {
-                        // 2024-03-28 : alert가 두번씩 호출됨 고민해봐야함 : index.js에서 문제됨
-
-                        alert(res.response.data.message);
-                        navigate("/login");
-                        return;
-                    }
-
-                })
 
         }
 
         // useEffect 마지막에는 함수 안에서 변동되는 값들을 넣어준다.(변경감지)
         getBook();
     }, [id, ACCESS_TOKEN, navigate]);
+
+    // 2024-04-01 : 여기까지
+    function updateBook() {
+        const id = document.getElementById('bookId').value;
+        const title = document.getElementById('title').value;
+        const author = document.getElementById('author').value;
+
+        console.log(id, title, author);
+
+        var bookObject = {
+            title: title,
+            author: author
+        }
+
+        console.log(bookObject);
+
+        axios.put(`http://127.0.0.1:8080/api/books/s/${id}/update`,
+            JSON.stringify(bookObject),
+            {
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': 'Bearer ' + ACCESS_TOKEN
+                }
+            }).then(function (res) {
+
+                console.log(res.data.data);
+                navigate(`/boards/${id}/detail`);
+                
+
+            }).catch(function (res) {
+                console.log(res);
+                if (res.response.status === 400) {
+                    alert(res.response.data.errors[0].defaultMessage);
+                    return;
+                }
+
+            }
+        )
+    }
 
     // 2024-03-31 : detailPage 꾸미기 완료.
     return (
@@ -98,10 +136,16 @@ const DetailPage = () => {
                             <input placeholder="author" id='author' name="author" className="form-control" defaultValue={book.author} />
                         </Col>
                     </Form.Group>
+                    <Form.Group as={Row} className='mb-3'>
+                        <Form.Label column sm={2}>visitCnt</Form.Label>
+                        <Col sm={10}>
+                            <input placeholder="visitCnt" id='visitCnt' name="visitCnt" className="form-control" value={book.visitCnt} readOnly/>
+                        </Col>
+                    </Form.Group>
                 </Form>
             </div>
             <div id='btnArea' style={{ paddingTop: "10px" }}>
-                <Button type='button' id='modifyBtn' name='modifyBtn' variant='success' onClick={() => navigate('/boards')}>수정</Button>
+                <Button type='button' id='modifyBtn' name='modifyBtn' variant='success' onClick={() => updateBook()}>수정</Button>
                 {' '}
                 <Button type='button' id='deleteBtn' name='deleteBtn' variant='danger' onClick={() => navigate('/boards')}>삭제</Button>
                 {' '}
