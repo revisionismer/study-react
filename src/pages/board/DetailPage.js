@@ -57,7 +57,7 @@ const DetailPage = () => {
                 console.log(res);
                 if (res.response.status === 401) {
                     // 2024-03-28 : alert가 두번씩 호출됨 고민해봐야함 : index.js에서 문제됨
-                
+
                     alert(res.response.data.message);
                     navigate("/login");
                     return;
@@ -92,21 +92,49 @@ const DetailPage = () => {
                     'Content-Type': 'application/json; charset=UTF-8',
                     'Authorization': 'Bearer ' + ACCESS_TOKEN
                 }
-            }).then(function (res) {
-
-                console.log(res.data.data);
-                navigate(`/boards/${id}/detail`);
-                
-
-            }).catch(function (res) {
-                console.log(res);
-                if (res.response.status === 400) {
-                    alert(res.response.data.errors[0].defaultMessage);
-                    return;
-                }
-
             }
-        )
+        ).then(function (res) {
+
+            console.log(res.data.data);
+            navigate(`/boards/${id}/detail`);
+
+        }).catch(function (res) {
+            console.log(res);
+            if (res.response.status === 400) {
+                alert(res.response.data.errors[0].defaultMessage);
+                return;
+            }
+
+        })
+
+    }
+
+    function deleteBook() {
+        const id = document.getElementById('bookId').value;
+
+        console.log(id);
+
+        axios.delete(`http://127.0.0.1:8080/api/books/s/${id}/delete`,
+            {
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': 'Bearer ' + ACCESS_TOKEN
+                }
+            }
+        ).then(function (res) {
+
+            console.log(res.data.data);
+            navigate(`/boards`);
+
+        }).catch(function (res) {
+            console.log(res);
+            if (res.response.status === 400) {
+                alert(res.response.data.errors[0].defaultMessage);
+                return;
+            }
+
+        })
+
     }
 
     // 2024-03-31 : detailPage 꾸미기 완료.
@@ -139,7 +167,7 @@ const DetailPage = () => {
                     <Form.Group as={Row} className='mb-3'>
                         <Form.Label column sm={2}>visitCnt</Form.Label>
                         <Col sm={10}>
-                            <input placeholder="visitCnt" id='visitCnt' name="visitCnt" className="form-control" value={book.visitCnt} readOnly/>
+                            <input placeholder="visitCnt" id='visitCnt' name="visitCnt" className="form-control" value={book.visitCnt} readOnly />
                         </Col>
                     </Form.Group>
                 </Form>
@@ -147,7 +175,7 @@ const DetailPage = () => {
             <div id='btnArea' style={{ paddingTop: "10px" }}>
                 <Button type='button' id='modifyBtn' name='modifyBtn' variant='success' onClick={() => updateBook()}>수정</Button>
                 {' '}
-                <Button type='button' id='deleteBtn' name='deleteBtn' variant='danger' onClick={() => navigate('/boards')}>삭제</Button>
+                <Button type='button' id='deleteBtn' name='deleteBtn' variant='danger' onClick={() => deleteBook()}>삭제</Button>
                 {' '}
                 <Button type='button' id='cancelBtn' name='cancelBtn' variant='warning' onClick={() => navigate('/boards')}>취소</Button>
             </div>
