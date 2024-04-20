@@ -1,5 +1,51 @@
 .box-style {
-  color: white;
-  background-color: blue;
-  
+    color: white;
+    background-color: blue;
+}
+
+.icon-button {
+    border-radius: 50% 50%;
+
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.divider {
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    width: 100%;
+}
+
+/* 이미지 나중에 바꿔야함 */
+.image-box-light-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.close-icon {
+  display: inline-block;
+  width: 20px;
+  height: 50px;
+
+}
+
+/* css로 X 아이콘 만들기 */
+.close-icon::before, .close-icon::after {
+    margin: 10px;
+    position: absolute;
+    content: ' ';
+    height: 20px;
+    width: 1px;
+    background-color: #111;
+}
+
+.close-icon::before {
+    transform: rotate(45deg);
+}
+
+.close-icon::after {
+    transform: rotate(-45deg);
 }

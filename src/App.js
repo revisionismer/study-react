@@ -8,6 +8,8 @@ import { test_num } from './Sub';
 import styled from 'styled-components';
 import { MyTitle } from './MyCss';
 import Header from './components/Header';
+import CustomHeader from './components/fragment/Header';
+
 import Footer from './components/Footer';
 import Login from './components/login/Login';
 import LoginPage from './pages/LoginPage';
@@ -236,9 +238,9 @@ function App() {
   }
 
   return (
-    <div>
-
+    <div>  
       <Header />
+      {/** <CustomHeader/> */}  
       {/** Route를 하려면 Routes 안에 선언되어야 한다. */}
       {/** <Top number={number} /> */}
       {/** <Bottom addNumber={addNumber} />*/}
