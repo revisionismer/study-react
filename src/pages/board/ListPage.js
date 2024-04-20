@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -14,6 +14,8 @@ const ListPage = () => {
     // 2024-03-14 : 여기까지.
     const [books, setBooks] = useState([]);
 
+    const navigate = useNavigate();
+
     // 해당 js가 호출시 최초 한번 실행
     useEffect(() => {
 
@@ -26,14 +28,22 @@ const ListPage = () => {
                     setBooks([...res.data.data]);
 
                 })
-                .catch(() => {
+                .catch((res) => {
                     console.log("데이터 불러오기 실패");
+
+                    if (res.response.status === 400 || res.response.status === 401 || res.response.status === 403) {
+       
+                        alert(res.response.data.message);
+                        
+                        navigate("/");
+                        return;
+                    } 
                 }
             )
         }
-
         getBooks();
-    }, []);
+
+    }, [navigate]);
 
     return (
         <>
@@ -46,6 +56,7 @@ const ListPage = () => {
                                 <th>No</th>
                                 <th>제목</th>
                                 <th>작성자</th>
+                                <th>조회수</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,6 +68,7 @@ const ListPage = () => {
                                         <td><Link to={"/boards/" + book.id + "/detail"}>{book.id}</Link></td>
                                         <td>{book.title}</td>
                                         <td>{book.author}</td>
+                                        <td>{book.visitCnt}</td>
                                     </tr>
                                 );
                             })}
