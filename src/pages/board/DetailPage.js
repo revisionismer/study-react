@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 
-// 2024-03-28 : 토큰이 만료되었을때 처리해줘여한다.
-const DetailPage = () => {
+// 2024-03-28 : 토큰이 만료되었을때 처리해줘야한다.
+const DetailPage = (props) => {
 
     var ACCESS_TOKEN = getCookie('access_token');
 
@@ -55,13 +55,15 @@ const DetailPage = () => {
 
             }).catch(function (res) {
                 console.log(res);
-                if (res.response.status === 401) {
+                if (res.response.status === 400 || res.response.status === 401 || res.response.status === 403) {
                     // 2024-03-28 : alert가 두번씩 호출됨 고민해봐야함 : index.js에서 문제됨
-
                     alert(res.response.data.message);
+                    
+                    // 2024-04-12 : 무슨 이유인지 GET 방식에서는 403일때 서버에서 쿠키 삭제가 안되어 클라이언트 단에서 직접 삭제
+                    deleteCookie('access_token');
                     navigate("/login");
                     return;
-                }
+                } 
             })
 
         }
@@ -101,7 +103,7 @@ const DetailPage = () => {
         }).catch(function (res) {
             console.log(res);
             if (res.response.status === 400) {
-                alert(res.response.data.errors[0].defaultMessage);
+                alert(res.response.data.message);
                 return;
             }
 
@@ -129,12 +131,15 @@ const DetailPage = () => {
         }).catch(function (res) {
             console.log(res);
             if (res.response.status === 400) {
-                alert(res.response.data.errors[0].defaultMessage);
+                alert(res.response.data.message);
                 return;
-            }
-
+            } 
         })
 
+    }
+
+    function deleteCookie(name) {
+        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     }
 
     // 2024-03-31 : detailPage 꾸미기 완료.
