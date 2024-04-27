@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { Link, Navigate, json, useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import loginMainImg from '../../aseets/img/wave.png';
-import bgImg from '../../aseets/img/bg.svg';
-import avatarImg from '../../aseets/img/avatar.svg';
+import loginMainImg from '../../assets/img/wave.png';
+import bgImg from '../../assets/img/bg.svg';
+import avatarImg from '../../assets/img/avatar.svg';
 
 import { Person, LockFill } from "react-bootstrap-icons";
 
@@ -338,7 +338,7 @@ const Login = () => {
                                     <LockFill></LockFill>
                                 </div>
                                 <div className="div">
-                                    <input type="password" id='password' name='username' className="input" placeholder='password' />
+                                    <input type="password" id='password' name='password' className="input" placeholder='password' autoComplete='off' />
                                 </div>
                             </div>
                             <div className='userBtnArea'>
