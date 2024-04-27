@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { Link, Navigate, json, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 
-import joinMainImg from '../../aseets/img/wave.png';
-import bgImg from '../../aseets/img/bg.svg';
-import avatarImg from '../../aseets/img/avatar.svg';
+import joinMainImg from '../../assets/img/wave.png';
+import bgImg from '../../assets/img/bg.svg';
+import avatarImg from '../../assets/img/avatar.svg';
 import { Envelope, LockFill, Mailbox, Person } from 'react-bootstrap-icons';
 
 import axios from 'axios';
@@ -301,25 +301,25 @@ const Join = () => {
         const email = document.getElementById('email').value;
 
         // 2024-03-25 : 회원가입 유효성 검사 백엔드단, 프론트단 처리 완료 : function 안에 있어야 정상 동작(분리시키면 작동 안함)
-        if(!username) {
+        if (!username) {
             alert("아이디를 입력해주세요");
             document.getElementById('username').focus();
             return false;
         }
 
-        if(!password) {
+        if (!password) {
             alert("비밀번호를 입력해주세요.");
             document.getElementById('password').focus();
             return false;
         }
 
-        if(!password_chk) {
+        if (!password_chk) {
             alert("비밀번호를 한 번 더 입력해주세요.");
             document.getElementById('password_chk').focus();
             return false;
         }
 
-        if(!email) {
+        if (!email) {
             alert("이메일을 입력해주세요.");
             document.getElementById('email').focus();
             return false;
@@ -359,7 +359,7 @@ const Join = () => {
             alert(res.data.message);
 
             navigate("/")
-        // 1-4. 실패
+            // 1-4. 실패
         }).catch(function (res) {
             console.log(res);
             if (res.response.status === 500) {
