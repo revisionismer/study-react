@@ -104,31 +104,31 @@ const WritePage = (props) => {
 
         console.log(title + ", " + content);
 
-        if (title.length === 0) {
-            alert("제목을 입력해주세요.");
-            document.getElementById('b_title').focus();
-            return;
-        }
+        if(title.length === 0){
+			alert("제목을 입력해주세요.");
+			document.getElementById('b_title').focus();
+			return;
+		}
 
-        if (content.length === 0) {
-            alert("내용을 입력해주세요.");
-            document.getElementById('b_content').focus();
-            return;
-        }
+        if(content.length === 0) {
+			alert("내용을 입력해주세요.");
+			document.getElementById('b_content').focus();
+			return;
+		}
 
         var boardObject = {
-            'title': title,
-            'content': content
+            'title' : title,
+            'content' : content
         }
 
         var formData = new FormData();
 
         formData.append("board", JSON.stringify(boardObject));
 
-        for (var i = 0; i < thumnailImgFile.length; i++) {
-
-            if (thumnailImgFile[i].type === 'image/jpeg' || thumnailImgFile[i].type === 'image/jpg' || thumnailImgFile[i].type === 'image/png') {
-
+        for(var i = 0; i < thumnailImgFile.length; i++) {
+            
+            if(thumnailImgFile[i].type === 'image/jpeg' || thumnailImgFile[i].type === 'image/jpg' || thumnailImgFile[i].type === 'image/png') {
+                
                 formData.append("files", thumnailImgFile[i]);
             } else {
                 alert("이미지 파일을 등록해주세요.");
@@ -146,7 +146,7 @@ const WritePage = (props) => {
             {
                 headers: {
                     'Authorization': 'Bearer ' + ACCESS_TOKEN,
-                    "Content-Type": "multipart/form-data"
+                    "Content-Type" : "multipart/form-data"
                 }
             }
 
@@ -167,7 +167,7 @@ const WritePage = (props) => {
                 navigate("/login");
                 return;
             } else {
-
+                
                 alert(res.response.data.error);
                 deleteCookie('access_token');
                 navigate("/login");
@@ -208,65 +208,65 @@ const WritePage = (props) => {
 
     return (
         <>
-            <div id='book-write-wrapper'>
-                <div className='book-write-container'>
-                    <Form>
-                        <FormGroup id='formBasicTitle'>
-                            <FormLabel>Title</FormLabel>
-                            <FormControl type='text' id='title' name='title' placeholder='책의 제목을 입력해주세요.' />
-                        </FormGroup>
-                        <FormGroup id='formBasicAuthor'>
-                            <FormLabel>Author</FormLabel>
-                            <FormControl type='text' id='author' name='author' placeholder='책의 저자를 입력해주세요.' />
-                        </FormGroup>
-                    </Form>
-
-                    <div style={{ paddingTop: 10 }}>
-                        <Button type='button' id='bookSaveBtn' name='bookSaveBtn' variant='primary' style={{ marginRight: 10 }} onClick={() => saveBook()}>저장</Button>
-                        <Button type='button' id='cancelBtn' name='cancelBtn' variant='warning' onClick={() => navigate('/boards')}>취소</Button>
-                    </div>
-                </div>
+        <div id='book-write-wrapper'>
+            <div className='book-write-container'>
+            <Form>
+                <FormGroup id='formBasicTitle'>
+                    <FormLabel>Title</FormLabel>
+                    <FormControl type='text' id='title' name='title' placeholder='책의 제목을 입력해주세요.' />
+                </FormGroup>
+                <FormGroup id='formBasicAuthor'>
+                    <FormLabel>Author</FormLabel>
+                    <FormControl type='text' id='author' name='author' placeholder='책의 저자를 입력해주세요.' />
+                </FormGroup>
+            </Form>
+     
+            <div style={{ paddingTop: 10 }}>
+                <Button type='button' id='bookSaveBtn' name='bookSaveBtn' variant='primary' style={{ marginRight: 10 }} onClick={() => saveBook()}>저장</Button>
+                <Button type='button' id='cancelBtn' name='cancelBtn' variant='warning' onClick={() => navigate('/boards')}>취소</Button>
             </div>
-            <br /><br />
-            <div id='board-write-wrapper'>
-                <div className='board-write-container'>
-                    <div className='board-write-box'>
-                        <div className='board-write-title-box'>
-                            <input type='text' className='board-write-title-input' id='b_title' name='b_title' placeholder='제목을 작성해주세요.' />
-                        </div>
-                        <div className='divider'></div>
-                        <div className='board-write-content-box'>
-                            <textarea id='b_content' name='b_content' className='board-write-content-textarea' placeholder='본문을 작성해주세요.' />
-                            <div className='icon-button'>
-                                {/** 2024-04-19 : 여기까지 */}
-                                <div className='icon image-box-light-icon'>
-                                    <PencilSquare style={{ cursor: "pointer" }} onClick={() => saveBoard()}></PencilSquare>
-                                    <Backspace style={{ cursor: "pointer" }} onClick={() => navigate('/boards')}></Backspace>
-                                </div>
+            </div>
+        </div>
+        <br/><br/>
+        <div id='board-write-wrapper'>
+            <div className='board-write-container'>
+                <div className='board-write-box'>
+                    <div className='board-write-title-box'>
+                        <input type='text' className='board-write-title-input' id='b_title' name='b_title' placeholder='제목을 작성해주세요.' />
+                    </div>
+                    <div className='divider'></div>
+                    <div className='board-write-content-box'>
+                        <textarea id='b_content' name='b_content' className='board-write-content-textarea' placeholder='본문을 작성해주세요.' />
+                        <div className='icon-button'>
+                            {/** 2024-04-19 : 여기까지 */}
+                            <div className='icon image-box-light-icon'>
+                                <PencilSquare style={{ cursor: "pointer" }} onClick={() => saveBoard()}></PencilSquare>
+                                <Backspace style={{ cursor: "pointer" }} onClick={() => navigate('/boards')}></Backspace>
                             </div>
-                            <input type='file' accept='image/*' style={{ display: 'none' }} />
                         </div>
-                        <div className='board-write-images-box'>
-                            <div className='board-write-image-box'>
-                                <img className='board-write-image' alt='' src=""></img>
-                                <div id="thumnailImgArea">
-                                    섬네일 사진 등록 : <input type="file" id="thumnailFile" name="thumnailFile" />
-                                </div>
-
-                                <div className='icon-button image-close' style={{ cursor: "pointer" }}>
-                                    <div className='icon close-icon' id='cacelBtn' onClick={() => deleteImgBtn()}></div>
-                                </div>
+                        <input type='file' accept='image/*' style={{ display: 'none' }} />
+                    </div>
+                    <div className='board-write-images-box'>
+                        <div className='board-write-image-box'>
+                            <img className='board-write-image' alt='' src=""></img>
+                            <div id="thumnailImgArea">
+                                섬네일 사진 등록 : <input type="file" id="thumnailFile" name="thumnailFile"/>
                             </div>
 
+                            <div className='icon-button image-close' style={{cursor: "pointer"}}>
+                                <div className='icon close-icon' id='cacelBtn' onClick={() => deleteImgBtn()}></div>
+                            </div>
                         </div>
 
                     </div>
 
-
                 </div>
+
+
             </div>
-
-
+        </div>
+      
+      
         </>
     );
 };
