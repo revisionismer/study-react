@@ -37,7 +37,8 @@ const ListPage = () => {
     // 2024-03-14 : 여기까지.
     const [books, setBooks] = useState([]);
     const [boards, setBoards] = useState([]);
-    const [boardFiles, setBoardFiles] = useState([]);
+    const [data, setData] = useState({}); 
+   
 
     const navigate = useNavigate();
 
@@ -48,20 +49,21 @@ const ListPage = () => {
             axios.get("http://127.0.0.1:8080/api/books/all")
                 .then((res) => {
 
-                    console.log(res);
-
                     setBooks([...res.data.data]);
-
+                    
                 })
                 .catch((res) => {
                     console.log("데이터 불러오기 실패");
 
-                    if (res.response.status === 400 || res.response.status === 401 || res.response.status === 403) {
+                    // 2024-05-09 : 네트워크 연결이 안되어 있을때 API 호출시 예외 터지는거 처리
+                    if(!res.message === 'Network Error') {
+                        if (res.response.status === 400 || res.response.status === 401 || res.response.status === 403) {
        
-                        alert(res.response.data.message);
-                        
-                        navigate("/");
-                        return;
+                            alert(res.response.data.message);
+                            deleteCookie('access_token');
+                            navigate("/");
+                            return;
+                        }
                     } 
                 }
             )
@@ -72,32 +74,48 @@ const ListPage = () => {
                 {
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8',
-                        'Authorization': 'Bearer ' + ACCESS_TOKEN
+//                      'Authorization': 'Bearer ' + ACCESS_TOKEN
                     }
                 }
             ).then(function (res) {
 
                 console.log(res);
-                setBoards([...res.data.data.boards.content]);
-
+                setBoards([...res.data.data.boards.content]);   
+                
+                setData({...res.data.data});  
+                
             }).catch(function (res) {
                 console.log(res);
-                if (res.response.status === 400 || res.response.status === 401 || res.response.status === 403) {
-                    // 2024-03-28 : alert가 두번씩 호출됨 고민해봐야함 : index.js에서 문제됨
-                    alert(res.response.data.message);
-                    
-                    // 2024-04-12 : 무슨 이유인지 GET 방식에서는 403일때 서버에서 쿠키 삭제가 안되어 클라이언트 단에서 직접 삭제
-                    deleteCookie('access_token');
-                    navigate("/login");
-                    return;
-                } 
+
+                if(!res.message === 'Network Error') {
+                    if (res.response.status === 400 || res.response.status === 401 || res.response.status === 403) {
+                        // 2024-03-28 : alert가 두번씩 호출됨 고민해봐야함 : index.js에서 문제됨
+                        alert(res.response.data.message);
+                        
+                        // 2024-04-12 : 무슨 이유인지 GET 방식에서는 403일때 서버에서 쿠키 삭제가 안되어 클라이언트 단에서 직접 삭제
+                        deleteCookie('access_token');
+                        navigate("/login");
+                        return;
+                    } 
+               
+                } else {  // 2024-05-09 : 이곳만 남겨둘거라 else는 이쪽에만 선언
+                    if(ACCESS_TOKEN !== null) {
+                        alert(res.response.data.message);
+                        deleteCookie('access_token');
+                        navigate("/login");
+                        return;
+                    } else {
+                        alert("Internal Server Error");
+                        navigate("/login");
+                        return;
+                    }
+                }
             })
 
         }
 
         getBooks();
         getBoards();
-       
 
     }, [navigate, ACCESS_TOKEN]);
 
@@ -177,6 +195,40 @@ const ListPage = () => {
                             </div>
                         );
                     })}
+                </div>
+                <div>
+                    {data.isFirst === true ? 
+                        <div className='my_paging d-flex justify-content-center align-items-center my_mb_lg_1'>
+                            <Link class="my_atag_none my_mr_sm_1" id="main_prev">
+								<i class="fa-solid fa-angle-left"></i>
+							</Link>
+
+							<Link class="my_atag_none_1">
+								<div class="my_paging_number_box my_mr_sm_1_1">
+									1
+								</div>
+							</Link>
+
+							<Link class="my_atag_none my_ml_sm_1">
+								<i class="fa-solid fa-angle-right"></i>
+							</Link>
+                        </div> 
+                    : 
+                        <div className="my_paging d-flex justify-content-center align-items-center my_mb_lg_1">
+                            {data.isPrev === true ? 
+                                <Link class="my_atag_none my_mr_sm_1" id="main_prev">
+								    <i class="fa-solid fa-angle-left"></i>
+							    </Link>
+                            :
+                                ''
+                            }
+                            {[...Array(data.pageNumbers)].map((data, index) => 
+                                <div key={index}>
+                                    <Link>{data}</Link>
+                                </div>
+                            )}
+                        </div>
+                    }    
                 </div>
             </div>
         </>
