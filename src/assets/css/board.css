@@ -125,3 +125,20 @@ a:link {
     height: 200px;
     border-bottom: 1px solid rgb(25, 25, 25);
 }
+
+.pagination:li {
+    display: inline-block;
+}
+
+.page {
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    border: 1px solid #111;
+    margin-left: 5px;
+}
+
+.page:hover {
+    background-color: blanchedalmond;
+    cursor: pointer;
+}
