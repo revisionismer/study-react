@@ -7,6 +7,8 @@ import BookItem from '../../components/book/BookItem';
 
 import DefaultImg from '../../assets/img/auth-background.png'; 
 
+import { ChevronLeft, ChevronRight } from 'react-bootstrap-icons'
+
 const TableArea = styled.div`
     width: 500px;
 `;
@@ -38,7 +40,8 @@ const ListPage = () => {
     const [books, setBooks] = useState([]);
     const [boards, setBoards] = useState([]);
     const [data, setData] = useState({}); 
-   
+
+    const [currentPage, setCurrentPage] = useState({});
 
     const navigate = useNavigate();
 
@@ -82,7 +85,8 @@ const ListPage = () => {
                 console.log(res);
                 setBoards([...res.data.data.boards.content]);   
                 
-                setData({...res.data.data});  
+                setData({...res.data.data});
+                setCurrentPage(0);
                 
             }).catch(function (res) {
                 console.log(res);
@@ -118,6 +122,176 @@ const ListPage = () => {
         getBoards();
 
     }, [navigate, ACCESS_TOKEN]);
+
+    // 2024-05-17 : 페이징 완료
+    function movePage(e) {
+        
+        e.preventDefault();
+
+        console.log(e.currentTarget.innerText);
+
+        var page = e.currentTarget.innerText - 1;
+
+        setCurrentPage(page);
+
+        var url = "/api/boards?page=" + page;
+
+        axios.get(url,
+                {
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+//                      'Authorization': 'Bearer ' + ACCESS_TOKEN
+                    }
+                }
+            ).then(function (res) {
+
+                console.log(res);
+                setBoards([...res.data.data.boards.content]);   
+                
+                setData({...res.data.data});  
+
+                // 2024-05-16 : 여기서부터 다시
+                
+                
+            }).catch(function (res) {
+                console.log(res);
+
+                if(!res.message === 'Network Error') {
+                    if (res.response.status === 400 || res.response.status === 401 || res.response.status === 403) {
+                        // 2024-03-28 : alert가 두번씩 호출됨 고민해봐야함 : index.js에서 문제됨
+                        alert(res.response.data.message);
+                        
+                        // 2024-04-12 : 무슨 이유인지 GET 방식에서는 403일때 서버에서 쿠키 삭제가 안되어 클라이언트 단에서 직접 삭제
+                        deleteCookie('access_token');
+                        navigate("/login");
+                        return;
+                    } 
+               
+                } else {  // 2024-05-09 : 이곳만 남겨둘거라 else는 이쪽에만 선언
+                    if(ACCESS_TOKEN !== null) {
+                        alert(res.response.data.message);
+                        deleteCookie('access_token');
+                        navigate("/login");
+                        return;
+                    } else {
+                        alert("Internal Server Error");
+                        navigate("/login");
+                        return;
+                    }
+                }
+            }
+        )
+    }
+
+    function movePrev(e) {
+
+        // 2024-05-16 : 동작은 하는데 초반 defaultPage때문에 이전페이지 첫페이지로 이동하는 문제 해결해야함
+        e.preventDefault();
+        
+        var page = currentPage - 1;
+
+        setCurrentPage(page);
+
+        var url = "/api/boards?page=" + page;
+
+        axios.get(url,
+                {
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+//                      'Authorization': 'Bearer ' + ACCESS_TOKEN
+                    }
+                }
+            ).then(function (res) {
+
+                console.log(res);
+                setBoards([...res.data.data.boards.content]);   
+                
+                setData({...res.data.data}); 
+
+            }).catch(function (res) {
+                console.log(res);
+
+                if(!res.message === 'Network Error') {
+                    if (res.response.status === 400 || res.response.status === 401 || res.response.status === 403) {
+                        // 2024-03-28 : alert가 두번씩 호출됨 고민해봐야함 : index.js에서 문제됨
+                        alert(res.response.data.message);
+                        
+                        // 2024-04-12 : 무슨 이유인지 GET 방식에서는 403일때 서버에서 쿠키 삭제가 안되어 클라이언트 단에서 직접 삭제
+                        deleteCookie('access_token');
+                        navigate("/login");
+                        return;
+                    } 
+               
+                } else {  // 2024-05-09 : 이곳만 남겨둘거라 else는 이쪽에만 선언
+                    if(ACCESS_TOKEN !== null) {
+                        alert(res.response.data.message);
+                        deleteCookie('access_token');
+                        navigate("/login");
+                        return;
+                    } else {
+                        alert("Internal Server Error");
+                        navigate("/login");
+                        return;
+                    }
+                }
+            }
+        )
+    }
+
+    function moveNext(e) {
+
+        e.preventDefault();
+        
+        var page = currentPage + 1 ;
+
+        setCurrentPage(page);
+
+        var url = "/api/boards?page=" + page;
+
+        axios.get(url,
+                {
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+//                      'Authorization': 'Bearer ' + ACCESS_TOKEN
+                    }
+                }
+            ).then(function (res) {
+
+                console.log(res);
+                setBoards([...res.data.data.boards.content]);   
+                
+                setData({...res.data.data});  
+                
+            
+            }).catch(function (res) {
+                console.log(res);
+
+                if(!res.message === 'Network Error') {
+                    if (res.response.status === 400 || res.response.status === 401 || res.response.status === 403) {
+                        // 2024-03-28 : alert가 두번씩 호출됨 고민해봐야함 : index.js에서 문제됨
+                        alert(res.response.data.message);
+                        
+                        // 2024-04-12 : 무슨 이유인지 GET 방식에서는 403일때 서버에서 쿠키 삭제가 안되어 클라이언트 단에서 직접 삭제
+                        deleteCookie('access_token');
+                        navigate("/login");
+                        return;
+                    } 
+               
+                } else {  // 2024-05-09 : 이곳만 남겨둘거라 else는 이쪽에만 선언
+                    if(ACCESS_TOKEN !== null) {
+                        alert(res.response.data.message);
+                        deleteCookie('access_token');
+                        navigate("/login");
+                        return;
+                    } else {
+                        alert("Internal Server Error");
+                        navigate("/login");
+                        return;
+                    }
+                }
+            }
+        )
+    }
 
     function deleteCookie(name) {
         document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -199,34 +373,40 @@ const ListPage = () => {
                 <div>
                     {data.isFirst === true ? 
                         <div className='my_paging d-flex justify-content-center align-items-center my_mb_lg_1'>
-                            <Link class="my_atag_none my_mr_sm_1" id="main_prev">
-								<i class="fa-solid fa-angle-left"></i>
+                            <Link className="my_atag_none my_mr_sm_1" id="main_prev">
+								<i className="fa-solid fa-angle-left"></i>
 							</Link>
 
-							<Link class="my_atag_none_1">
-								<div class="my_paging_number_box my_mr_sm_1_1">
+							<Link className="my_atag_none_1">
+								<div className="my_paging_number_box my_mr_sm_1_1">
 									1
 								</div>
 							</Link>
 
-							<Link class="my_atag_none my_ml_sm_1">
-								<i class="fa-solid fa-angle-right"></i>
+							<Link className="my_atag_none my_ml_sm_1">
+								<i className="fa-solid fa-angle-right"></i>
 							</Link>
                         </div> 
                     : 
                         <div className="my_paging d-flex justify-content-center align-items-center my_mb_lg_1">
                             {data.isPrev === true ? 
-                                <Link class="my_atag_none my_mr_sm_1" id="main_prev">
-								    <i class="fa-solid fa-angle-left"></i>
+                                <Link className="my_atag_none my_mr_sm_1" id="main_prev" onClick={movePrev}>
+								    <ChevronLeft></ChevronLeft>
 							    </Link>
                             :
                                 ''
                             }
-                            {[...Array(data.pageNumbers)].map((data, index) => 
-                                <div key={index}>
-                                    <Link>{data}</Link>
-                                </div>
-                            )}
+                            <ul className='pagination' style={{listStyle: "none", padding: "0", margin: "0"}}>
+                                {data.pageNumbers?.map( (i) => (<li className='page' key={i} onClick={movePage}>{i}</li>) )}
+                            </ul>
+
+                            {data.isNext === true ? 
+                                <Link className="my_atag_none my_mr_sm_1" id="main_next" onClick={moveNext}>
+								    <ChevronRight></ChevronRight>
+							    </Link>
+                            :
+                               ''
+                            }
                         </div>
                     }    
                 </div>
