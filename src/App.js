@@ -20,7 +20,8 @@ import WritePage from './pages/board/WritePage';
 import Top from './components/redux/Top';
 import Bottom from './components/redux/Bottom';
 import JoinPage from './pages/JoinPage';
-import DetailPage from './pages/board/DetailPage';
+import DetailBookPage from './pages/book/DetailPage';
+import DetailBoardPage from './pages/board/DetailPage';
 
 const aColor = {
   backgroundColor: 'red',
@@ -248,8 +249,9 @@ function App() {
         <Route path='/*' exact={true} element={<HomePage />}></Route>
         <Route path='/boards/*' exact={true} element={<ListPage />}></Route>
         <Route path="/boards/write/*" exact={true} element={<WritePage />}></Route>
-        <Route path='/boards/:id/detail/*' exact={true} element={<DetailPage />}></Route>
+        <Route path='/boards/:id/detail/*' exact={true} element={<DetailBoardPage />}></Route>
 
+        <Route path='/books/:id/detail/*' exact={true} element={<DetailBookPage />}></Route>
       </Routes>
       <Footer />
     </div>

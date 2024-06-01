@@ -11,7 +11,7 @@ const BookItem = (props) => {
             <CardBody>
                 <CardHeader>{author}</CardHeader>
                 <CardTitle>{title}</CardTitle>
-                <Link to={"/boards/" + id + "/detail"} className='btn btn-primary'>상세보기</Link>
+                <Link to={"/books/" + id + "/detail"} className='btn btn-primary'>상세보기</Link>
             </CardBody>
         </Card>
     );
