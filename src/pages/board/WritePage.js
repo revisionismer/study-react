@@ -126,6 +126,11 @@ const WritePage = (props) => {
         formData.append("board", JSON.stringify(boardObject));
 
         for(var i = 0; i < thumnailImgFile.length; i++) {
+
+            if(thumnailImgFile.length > 1) {
+                alert("이미지 파일은 1개만 등록해주세요.");
+                return false;
+            }
             
             if(thumnailImgFile[i].type === 'image/jpeg' || thumnailImgFile[i].type === 'image/jpg' || thumnailImgFile[i].type === 'image/png') {
                 
