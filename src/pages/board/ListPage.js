@@ -45,6 +45,15 @@ const ListPage = () => {
 
     const navigate = useNavigate();
 
+    // 2024-06-07 : 페이지 블록당 보여줄 페이지 번호 갯수
+    const [limit, setLimit] = useState();
+
+    // 2024-06-06 : 페이징처리 얼떨결에 됨....(상세 분석은 나중에)
+    let start = (currentPage - 1) - (currentPage % limit) + 1;
+    let end = currentPage - (currentPage % limit) + limit;
+
+    console.log("start : " + start, "end : " + end);
+
     // 해당 js가 호출시 최초 한번 실행
     useEffect(() => {
 
@@ -77,7 +86,7 @@ const ListPage = () => {
                 {
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8',
-//                      'Authorization': 'Bearer ' + ACCESS_TOKEN
+                        //                      'Authorization': 'Bearer ' + ACCESS_TOKEN
                     }
                 }
             ).then(function (res) {
@@ -87,6 +96,9 @@ const ListPage = () => {
 
                 setData({ ...res.data.data });
                 setCurrentPage(0);
+
+                setLimit(5);
+
 
             }).catch(function (res) {
                 console.log(res);
@@ -133,6 +145,8 @@ const ListPage = () => {
         var page = e.currentTarget.innerText - 1;
 
         setCurrentPage(page);
+
+        console.log("currentpage : " + page);
 
         var url = "/api/boards?page=" + page;
 
@@ -354,7 +368,7 @@ const ListPage = () => {
                                             내용 : {board.content}
                                         </div>
                                         <div className='my_main_item_date my_mb_sm_1'>
-                                            날짜 : {board.createdAt}
+                                            날짜 : {board.updatedAt === null ? board.createdAt : board.updatedAt}
                                         </div>
                                     </div>
                                 </Link>
@@ -396,7 +410,9 @@ const ListPage = () => {
                                 ''
                             }
                             <ul className='pagination' style={{ listStyle: "none", padding: "0", margin: "0" }}>
-                                {data.pageNumbers?.map((i) => (<li className='page' key={i} onClick={movePage}>{i}</li>))}
+                                {data.pageNumbers?.slice(start, end).map((i) => (
+                                    <li className='page' key={i} onClick={movePage}>{i}</li>
+                                ))}
 
                             </ul>
                             {data.isNext === true ?
