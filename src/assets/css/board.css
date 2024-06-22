@@ -142,3 +142,15 @@ a:link {
     background-color: blanchedalmond;
     cursor: pointer;
 }
+
+.page.active {
+    background-color: blanchedalmond;
+}
+
+#totalLoveCnt {
+    padding-left: 3px;
+}
+
+#love, #unlove {
+    cursor: pointer;
+}
