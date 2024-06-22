@@ -43,6 +43,8 @@ const ListPage = () => {
 
     const [currentPage, setCurrentPage] = useState({});
 
+    const [totalPageCount, setTotalPageCount] = useState({});
+
     const navigate = useNavigate();
 
     // 2024-06-07 : 페이지 블록당 보여줄 페이지 번호 갯수
@@ -53,6 +55,23 @@ const ListPage = () => {
     let end = currentPage - (currentPage % limit) + limit;
 
     console.log("start : " + start, "end : " + end);
+
+    // 2024-06-11 : 화살표 말고 숫자 버튼 누를때 동작
+    const pagination = document.querySelectorAll(".pagination li");
+
+    pagination.forEach( (page) => {
+        
+        page.addEventListener('click', () => {
+
+            pagination.forEach( (e) => {
+                e.classList.remove('active');
+            });
+
+            page.classList.add('active');
+        
+        });
+
+    });
 
     // 해당 js가 호출시 최초 한번 실행
     useEffect(() => {
@@ -86,7 +105,7 @@ const ListPage = () => {
                 {
                     headers: {
                         'Content-Type': 'application/json; charset=UTF-8',
-                        //                      'Authorization': 'Bearer ' + ACCESS_TOKEN
+//                      'Authorization': 'Bearer ' + ACCESS_TOKEN
                     }
                 }
             ).then(function (res) {
@@ -98,6 +117,7 @@ const ListPage = () => {
                 setCurrentPage(0);
 
                 setLimit(5);
+                setTotalPageCount(res.data.data.pageNumbers.length);
 
 
             }).catch(function (res) {
@@ -136,7 +156,7 @@ const ListPage = () => {
     }, [navigate, ACCESS_TOKEN]);
 
     // 2024-05-17 : 페이징 완료
-    function movePage(e) {
+    async function movePage(e) {
 
         e.preventDefault();
 
@@ -150,11 +170,11 @@ const ListPage = () => {
 
         var url = "/api/boards?page=" + page;
 
-        axios.get(url,
+        await axios.get(url,
             {
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8',
-                    //                      'Authorization': 'Bearer ' + ACCESS_TOKEN
+//                  'Authorization': 'Bearer ' + ACCESS_TOKEN
                 }
             }
         ).then(function (res) {
@@ -196,22 +216,32 @@ const ListPage = () => {
         )
     }
 
-    function movePrev(e) {
+    async function movePrev(e) {
 
         // 2024-05-16 : 동작은 하는데 초반 defaultPage때문에 이전페이지 첫페이지로 이동하는 문제 해결해야함
         e.preventDefault();
 
         var page = currentPage - 1;
 
+        if(page < 0) {
+            return false;
+        }
+
         setCurrentPage(page);
+
+        // 2024-06-12 : 이전 페이지로 가기전에 원래 페이지 정보
+        var oriPage = currentPage + 1;
+
+        // 2024-06-11 : 이전 페이지 진행중(active)
+        document.getElementById('page_' + oriPage).classList.remove('active');
 
         var url = "/api/boards?page=" + page;
 
-        axios.get(url,
+        await axios.get(url,
             {
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8',
-                    //                      'Authorization': 'Bearer ' + ACCESS_TOKEN
+//                  'Authorization': 'Bearer ' + ACCESS_TOKEN
                 }
             }
         ).then(function (res) {
@@ -220,6 +250,8 @@ const ListPage = () => {
             setBoards([...res.data.data.boards.content]);
 
             setData({ ...res.data.data });
+
+            document.getElementById('page_' + currentPage).classList.add('active');
 
         }).catch(function (res) {
             console.log(res);
@@ -247,25 +279,31 @@ const ListPage = () => {
                     return;
                 }
             }
-        }
-        )
+        })
     }
 
-    function moveNext(e) {
+    async function moveNext(e) {
 
         e.preventDefault();
 
         var page = currentPage + 1;
+     
+        if(page >= totalPageCount) {
+            return false;
+        }
 
         setCurrentPage(page);
 
+        // 2024-06-12 : 다음 페이지로 가기전에 원래 페이지에 붙어있는 active 제거
+        document.getElementById('page_' + page).classList.remove('active');
+
         var url = "/api/boards?page=" + page;
 
-        axios.get(url,
+        await axios.get(url,
             {
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8',
-                    //                      'Authorization': 'Bearer ' + ACCESS_TOKEN
+//                  'Authorization': 'Bearer ' + ACCESS_TOKEN
                 }
             }
         ).then(function (res) {
@@ -275,6 +313,10 @@ const ListPage = () => {
 
             setData({ ...res.data.data });
 
+            // 2024-06-12 : api 실행후에는 다음 페이지에 active가 되어 있어야 하므로 + 1을 한 번더 해준다.
+            var nextPage = page + 1;
+
+            document.getElementById('page_' + nextPage).classList.add('active');
 
         }).catch(function (res) {
             console.log(res);
@@ -302,12 +344,25 @@ const ListPage = () => {
                     return;
                 }
             }
-        }
-        )
+        })
     }
 
     function deleteCookie(name) {
         document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+
+    // 2024-06-13 : debunce 적용 
+    function debounce(func, delay) {
+        let timer;
+
+        return function() {
+            const args = arguments;
+            clearTimeout(timer);
+
+            timer = setTimeout( () => {
+                func.apply(this, args);
+            }, delay);
+        }
     }
 
     return (
@@ -403,7 +458,7 @@ const ListPage = () => {
                         :
                         <div className="my_paging d-flex justify-content-center align-items-center my_mb_lg_1">
                             {data.isPrev === true ?
-                                <Link className="my_atag_none my_mr_sm_1" id="main_prev" onClick={movePrev}>
+                                <Link className="my_atag_none my_mr_sm_1" id="main_prev" onClick={debounce(movePrev, 10)}>
                                     <ChevronLeft></ChevronLeft>
                                 </Link>
                                 :
@@ -411,12 +466,12 @@ const ListPage = () => {
                             }
                             <ul className='pagination' style={{ listStyle: "none", padding: "0", margin: "0" }}>
                                 {data.pageNumbers?.slice(start, end).map((i) => (
-                                    <li className='page' key={i} onClick={movePage}>{i}</li>
+                                    <li id={'page_' + i} className={ i === currentPage + 1 ? 'page active' : 'page'} key={i} onClick={movePage}>{i}</li>
                                 ))}
 
                             </ul>
                             {data.isNext === true ?
-                                <Link className="my_atag_none my_mr_sm_1" id="main_next" onClick={moveNext}>
+                                <Link className="my_atag_none my_mr_sm_1" id="main_next" onClick={debounce(moveNext, 10)}>
                                     <ChevronRight></ChevronRight>
                                 </Link>
                                 :

@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
+import { HeartFill, Heart } from 'react-bootstrap-icons'
 
 import DefaultImg from '../../assets/img/auth-background.png';
 
@@ -42,7 +43,9 @@ const DetailPage = (props) => {
         deleteYn: 'N',
         originalImgFileName: null,
         thumnailImgFileName: null,
-        hits: ""
+        hits: "",
+        love : null,
+        totalLoveCnt : null
     });
 
     // 2024-05-21 : board API로 수정 중
@@ -60,6 +63,13 @@ const DetailPage = (props) => {
                 console.log(res.data.data);
                 setBoard(res.data.data);
 
+                if(res.data.data.love === true) {
+                    document.getElementById('love').style.display = 'none';
+                
+                } else {
+                    document.getElementById('unlove').style.display = 'none';
+                
+                }
             }).catch(function (res) {
                 console.log(res);
                 if (res.response.status === 400 || res.response.status === 401 || res.response.status === 403) {
@@ -185,6 +195,84 @@ const DetailPage = (props) => {
         console.log(id);
 
     }
+ 
+    // 2024-06-18 : 좋아요(love) API 구현 완료
+    function love(boardId) {
+      
+        axios.post(`http://127.0.0.1:8080/api/loves/s/${boardId}/love`,
+        null,
+        {
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization': 'Bearer ' + ACCESS_TOKEN
+            }
+        }
+        ).then(function (res) {
+            console.log(res);
+
+            document.getElementById('totalLoveCnt').innerHTML = res.data.data.totalLoveCnt;
+
+            if(res.data.data.love === true) {
+                document.getElementById('unlove').style.display = 'inline';
+                document.getElementById('love').style.display = 'none';
+            }
+            
+        }).catch(function (res) {
+            console.log(res);
+            if (res.response.status === 400 || res.response.status === 401 || res.response.status === 403) {
+                // 2024-03-28 : alert가 두번씩 호출됨 고민해봐야함 : index.js에서 문제됨
+                alert(res.response.data.message);
+
+                return false;
+            } else {
+                
+                alert(res.response.data.error);
+                deleteCookie('access_token');
+                navigate("/login");
+
+                return;
+
+            }
+        })
+    }
+
+    function unlove(boardId) {
+        axios.delete(`http://127.0.0.1:8080/api/loves/s/${boardId}/unlove`,
+        {
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization': 'Bearer ' + ACCESS_TOKEN
+            }
+        }
+        ).then(function (res) {
+            console.log(res);
+
+            document.getElementById('totalLoveCnt').innerHTML = res.data.data.totalLoveCnt;
+
+            if(res.data.data.love === false) {
+                console.log("좋아요 취소!!")
+                document.getElementById('unlove').style.display = 'none';
+                document.getElementById('love').style.display = 'inline';
+            }
+
+        }).catch(function (res) {
+            console.log(res);
+            if (res.response.status === 400 || res.response.status === 401 || res.response.status === 403) {
+                // 2024-03-28 : alert가 두번씩 호출됨 고민해봐야함 : index.js에서 문제됨
+                alert(res.response.data.message);
+
+                return false;
+            } else {
+                
+                alert(res.response.data.error);
+                deleteCookie('access_token');
+                navigate("/login");
+
+                return;
+
+            }
+        })
+    }
 
     function deleteCookie(name) {
         document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -229,6 +317,14 @@ const DetailPage = (props) => {
                             <input placeholder="hits" id='hits' name="hits" className="form-control" value={board.hits} readOnly />
                         </Col>
                     </Form.Group>
+
+                    <div id="loveArea">
+                        <HeartFill id='unlove' color='red' onClick={() => unlove(board.id)}></HeartFill>
+                        <Heart id='love' onClick={() => love(board.id)}></Heart>
+                        
+				        <b id="totalLoveCnt">{board.totalLoveCnt}</b>
+           	        </div> 
+                   
                     <div className='my_main_item_thumnail'>
                         <img id='thumnailImg' style={{ width: '100%', height: '100%' }} src={board.thumnailImgFileName === null ? DefaultImg : '/thumnail/' + board.thumnailImgFileName} alt=''></img>
                         <p id='thumnailImgName'>{board.originalImgFileName === null ? '기본 사진' : board.originalImgFileName}</p>
@@ -239,6 +335,7 @@ const DetailPage = (props) => {
                             : ''}
                     </div>
                 </Form>
+                <br></br>
                 <div id='btnArea' style={{ paddingTop: "40px" }}>
                     {board.pageOwner === true ? <Button type='button' id='modifyBtn' name='modifyBtn' variant='success' style={{ marginRight: '5px' }} onClick={() => updateBoard()}>수정</Button> : ''}
                     {' '}
