@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import avatarImg from '../../assets/img/avatar.svg';
 
-import { PencilSquare, Backspace } from 'react-bootstrap-icons'
+import { PencilSquare, Backspace, HeartFill, Heart } from 'react-bootstrap-icons'
 
 import '../../assets/css/board.css';
 
