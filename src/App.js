@@ -22,6 +22,7 @@ import Bottom from './components/redux/Bottom';
 import JoinPage from './pages/JoinPage';
 import DetailBookPage from './pages/book/DetailPage';
 import DetailBoardPage from './pages/board/DetailPage';
+import UserInfoPage from './pages/user/UserInfoPage';
 
 const aColor = {
   backgroundColor: 'red',
@@ -247,11 +248,14 @@ function App() {
       <Routes>
         {/** exact 속성 true : path랑 정확히 일치해야 routing 해준다는 의미. */}
         <Route path='/*' exact={true} element={<HomePage />}></Route>
+        <Route path='/home' exact={true} element={<HomePage />}></Route>
         <Route path='/boards/*' exact={true} element={<ListPage />}></Route>
         <Route path="/boards/write/*" exact={true} element={<WritePage />}></Route>
         <Route path='/boards/:id/detail/*' exact={true} element={<DetailBoardPage />}></Route>
 
         <Route path='/books/:id/detail/*' exact={true} element={<DetailBookPage />}></Route>
+      
+        <Route path='/users/info/*' exact={true} element={<UserInfoPage/>}></Route>
       </Routes>
       <Footer />
     </div>

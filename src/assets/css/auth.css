@@ -2,6 +2,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    padding-top: 50px;
 }
 
 .my_auth_form_box {

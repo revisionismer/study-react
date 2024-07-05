@@ -97,7 +97,7 @@ const ListPage = () => {
                         }
                     }
                 }
-                )
+            )
         }
 
         const getBoards = async () => {
