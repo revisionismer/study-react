@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Container, Form, FormControl, Nav, Navbar } from 'react-bootstrap';
+import { Button, Container, Dropdown, Form, FormControl, Nav, Navbar } from 'react-bootstrap';
+
+import Avatar from '../assets/img/avatar.svg';
+
+import "../assets/css/header.css";
 
 import axios from 'axios';
 
@@ -21,6 +25,7 @@ const HomeLink = styled(Link)`
 const LoginLink = styled(Link)`
     color : blue;
 `;
+
 
 // 2024-02-24 : 14강 12분 42초
 const Header = () => {
@@ -84,12 +89,84 @@ const Header = () => {
         })
     }
 
+    // 2024-06-26 : 프로필 show/hide 구현 완료
+    function toggleProfile() {
+
+        const dropdownArea = document.getElementById('dropdown-area');
+        const imgArea = document.getElementById('img-area');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+
+        if(dropdownArea.classList.contains('show')) {        
+            dropdownArea.classList.remove('show');
+            imgArea.ariaExpanded = true;
+            dropdownMenu.classList.remove('show');
+
+        } else {
+            dropdownArea.classList.add('show')
+            imgArea.ariaExpanded = false;
+            dropdownMenu.classList.add('show');
+        }
+    }
+
+    window.addEventListener('click', function(e){
+        
+        const dropdownArea = document.getElementById('dropdown-area');
+        const imgArea = document.getElementById('img-area');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+
+        if(e.target.id === '') {
+            // 2024-06-27 : dropDownArea가 존재할 때만 실행
+            if(dropdownArea) {
+                if(dropdownArea.classList.contains('show')) {        
+                    dropdownArea.classList.remove('show');
+                    imgArea.ariaExpanded = true;
+                    dropdownMenu.classList.remove('show');
+                } 
+            }    
+        }
+
+    }); 
+
+    const [user, setUser] = useState({
+        id : "",
+        username : "",
+        email : "",
+        profileImageUrl : null,
+        role : ""
+    });
+
+    useEffect(() => {
+
+        const getUser = async () => {
+            axios.get(`http://127.0.0.1:8080/api/users/s/info`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'Authorization': 'Bearer ' + ACCESS_TOKEN
+                    }
+                }
+            ).then(function (res) {
+                console.log(res.data.data);
+                setUser(res.data.data);
+                    
+            }).catch(function (res) {
+                
+            })
+    
+        }
+    
+        // useEffect 마지막에는 함수 안에서 변동되는 값들을 넣어준다.(변경감지)
+        getUser();
+
+    }, [ACCESS_TOKEN, navigate]);
+
+
     return (
         <div>
             <Navbar bg='dark' variant='dark'>
                 <div className='container-fluid'>
                     <Navbar.Brand>
-                        <Link to={"/"} style={{ paddingLeft: 10 }} className='nav-link'>Home</Link>
+                        <Link to={"/"} style={{ paddingLeft: 10 }} className='nav-link'>PARK</Link>
                     </Navbar.Brand>
                     <div className='collapse navbar-collapse justify-content-end'>
                         <Nav className='mr-auto'>
@@ -110,12 +187,24 @@ const Header = () => {
                             <Link to={"/login"} className='nav-link'>로그인</Link>
                         </Nav> : ''
                     }
-                    { ACCESS_TOKEN != null ? 
-                        <Nav className='mr-auto'>
-                            <Link to={"/logout"} className='nav-link' onClick={ () => logout() }>로그아웃</Link>
-                        </Nav> : ''
-                    }
+                    
+
                     </div>
+                    { ACCESS_TOKEN != null ? 
+                    <div id='profile-area' onClick={ () => toggleProfile()}> 
+                        <div id='dropdown-area' className="dropdown dropleft">        	
+        	                <div id='img-area' data-toggle="dropdown" aria-expanded="true">
+                                <img src={user.profileImageUrl === null ? Avatar : "/userImg/" + user.profileImageUrl} alt='' className="my_profile_rounded_img_btn_lg" id="dropdown_userImage" style={{width: '50px', height: '50px'}} />
+                            </div>
+                            <div id='dropdown-menu' className="dropdown-menu">
+                                <Link to={"/users/info"} className='dropdown-item'>회원 정보</Link>
+                                <Link to={"/home"} className='dropdown-item'>Home</Link>
+                                <Link to={"/logout"} className='dropdown-item' onClick={ () => logout() }>로그아웃</Link>
+                            </div>
+                        </div>
+                    </div>
+                    : ''
+                    }
                 </div>
             </Navbar>
         </div>
