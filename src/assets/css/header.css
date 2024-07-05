@@ -40,3 +40,12 @@
     align-items: center;
     gap: 15px;
 }
+
+#profile-area {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#dropdown-menu {
+    left: -100px
+}
